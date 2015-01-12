@@ -1,0 +1,172 @@
+{
+  "errors": [
+    "errors:", 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "12345", 
+        "line": 8
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "8.", 
+        "line": 11
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "rob.rob.ro!b.", 
+        "line": 12
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "-rob", 
+        "line": 13
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "www.mindtwin.com-", 
+        "line": 14
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "10.10.10.10 255.255.255.255", 
+        "line": 15
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "www-.mindtwin.com", 
+        "line": 17
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "1234.dig.com", 
+        "line": 18
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "phase": "normalization", 
+        "as": "235.10.123.45", 
+        "line": 20, 
+        "error": "Queried IP address doesnot exist"
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "8888", 
+        "line": 21
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "8.8.8.8.in-addr.arpa", 
+        "line": 24
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "123.456.789.101", 
+        "line": 25
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "localhost.", 
+        "line": 26
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "1000.1000.1000.a", 
+        "line": 27
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "010121314", 
+        "line": 28
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "8.8.8.8.in-addr.arpa.", 
+        "line": 29
+      }
+    }, 
+    {
+      "type": "Error", 
+      "occurrences": {
+        "as": "microsoft.com windowsupdate", 
+        "line": 30
+      }
+    }
+  ], 
+  "totalErrors": 17, 
+  "discoveredInformation": [
+    "discoveredInformation:", 
+    {
+      "discoverdName": "recursns1.net.umd.edu.", 
+      "type": "IPv4", 
+      "occurrences": {
+        "as": "128.8.74.2", 
+        "line": 7
+      }, 
+      "normalized": "128.8.74.2"
+    }, 
+    {
+      "discoverdName": "recursns1.net.umd.edu.", 
+      "type": "IPv4", 
+      "occurrences": {
+        "as": "235.10.123.45", 
+        "line": 20
+      }, 
+      "normalized": "235.10.123.45"
+    }, 
+    {
+      "discoverdName": "google-public-dns-a.google.com.", 
+      "type": "IPv4", 
+      "occurrences": {
+        "as": "8.8.8.8", 
+        "line": 22
+      }, 
+      "normalized": "8.8.8.8"
+    }, 
+    {
+      "discoverdName": "noc.net.umd.edu.", 
+      "type": "IPv4", 
+      "occurrences": {
+        "as": "128.8.5.2", 
+        "line": 31
+      }, 
+      "normalized": "128.8.5.2"
+    }
+  ], 
+  "totalFQDN": 7, 
+  "tokenSkippedAlreadySawNormalized": 1, 
+  "totalIPv4": 4, 
+  "totalPQDN": 3, 
+  "tokenSkippedAlreadySeen": 1, 
+  "linesWithToken": 34
+}

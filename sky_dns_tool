@@ -1,0 +1,130 @@
+#! /usr/bin/python
+# Importing the necessary libraries
+import json
+import dyn_func # private library to validate IP address and hostnames
+import sys, traceback
+from dns import resolver,reversename
+
+print 'Welcome to the DNS tool'
+prompt = 'Please enter the filename: '
+file_name = raw_input(prompt)
+try:
+    i_file = open(file_name)
+except:
+    print "Please enter a valid file name : Unable to open input file: {}".format(file_name)
+    print "Exiting now with exit code 2"
+    exit(2)
+
+output_file = 'raw_token_cache_file'
+jop_file = 'json_human_file'
+jop_file_mc = 'json_reg_file'
+
+i_file = open(file_name)            # Input file
+o_file = open(output_file, 'w')     # Raw token cache file
+j_file = open(jop_file, 'w')        # Json format file with indentation to make it human readable
+jsp_file = open(jop_file_mc, 'w')   # Regular Json format file
+
+
+rtc = {}            # raw token cache
+etc = {}            # error cache
+ntc = {}            # normalized token cache
+iptc = {}           # ip address token cache
+stc = {}            # summary data cache
+
+rtc["localhost"] = {"line_num": [0]}
+iptc_list = ['discoveredInformation:']
+stc_list = ['summaryData:']
+ntc_list = []
+etc_list = ['errors:']
+
+num_lines = 0
+num_errors = 0
+num_pqdn = 0
+num_fqdn = 0
+num_ipv4 = 0
+dup_token = 0
+dup_tsasn = 0   # token skipped already saw normalized
+
+for line in i_file:
+    line = line.partition('#')[0]
+    line = line.strip()
+    if line != '':
+        num_lines += 1
+        token = line
+
+        token_key = rtc.keys()
+        if token in token_key:
+            if token != "localhost":
+                dup_token += 1
+            d = rtc[token]
+            l = d['line_num']
+            l.append(num_lines)
+        else:
+            rtc[token] = {"line_num" : [num_lines]}
+            if dyn_func.validate_ip(token):
+                addr=reversename.from_address(token)
+                try:
+                    dsc_name = str(resolver.query(addr,"PTR")[0])
+                except Exception:
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    formatted_lines = traceback.format_exc().splitlines()
+                    if formatted_lines[-1] == "NXDOMAIN":
+                        err_msg = 'Queried IP address doesnot exist'.format(token)
+                    occ = {"as": token, "line": num_lines, "phase": "normalization", "error": err_msg}
+                    etc_cache = {"type": "Error", "occurrences": occ}
+                    etc_list.append(etc_cache)
+                    num_errors += 1
+
+                occ = {"as": token, "line": num_lines}
+                iptc_cache = {"type": "IPv4", "occurrences": occ, "normalized": token, "discoverdName" :dsc_name}
+                iptc_list.append(iptc_cache)
+                num_ipv4 += 1
+            elif dyn_func.is_valid_hostname(token)['result']:
+                alist = []
+                try:
+                    answer = resolver.query(token, "A")
+                    for rdata in answer:
+                        alist.append(rdata.address)
+                except Exception:
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    formatted_lines = traceback.format_exc().splitlines()
+                    if formatted_lines[-1] == "NXDOMAIN":
+                        err = formatted_lines[-1]
+                        err_msg = 'Error message for hostname : {1} invalid with error for {0}'.format(err, token)
+                    elif formatted_lines[-1] == "NoAnswer":
+                        err = formatted_lines[-1]
+                        err_msg = 'Queried web address not found : {}'.format(token)
+                    occ = {"as": token, "line": num_lines, "phase": "normalization", "error": err_msg}
+                    etc_cache = {"type": "Error", "occurrences": occ}
+                    etc_list.append(etc_cache)
+                    num_errors += 1
+
+                if dyn_func.is_valid_hostname(token)['token_type'] == 'PQDN':
+                    nmz_token = "{}.".format(token)
+                    num_pqdn += 1
+                    if nmz_token in token_key:
+                        dup_tsasn += 1
+                else:
+                    nmz_token = token
+                    num_fqdn += 1
+                occ = {"as": token, "line": num_lines, "normalized": nmz_token, "recordsAType": alist}
+                ntc_cache = {"type": "DN", "occurrences": occ}
+                ntc_list.append(ntc_cache)
+            else:
+                occ = {"as": token, "line": num_lines}
+                etc_cache = {"type": "Error", "occurrences": occ}
+                etc_list.append(etc_cache)
+                num_errors += 1
+
+stc_cache = {"linesWithToken": num_lines, "totalFQDN": num_fqdn, "totalPQDN": num_pqdn, "totalIPv4": num_ipv4,
+             "totalErrors": num_errors, "tokenSkippedAlreadySeen": dup_token,
+             "tokenSkippedAlreadySawNormalized": dup_tsasn, "errors": etc_list,
+             "discoveredInformation": iptc_list}
+
+json.dump(stc_cache, j_file, indent=2)
+json.dump(rtc, o_file)
+json.dump(stc_cache, jsp_file)
+
+print "Tool Execution successful, Quitting now"
+exit(0)
+
