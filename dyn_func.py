@@ -34,7 +34,7 @@ def is_valid_hostname(hostname):
     if len(a) > 4:
         res["result"] = False
         return res
-    elif len(a) == 3:
+    elif len(a) <= 3:
         res["token_type"] = 'PQDN'
     else:
         res["token_type"] = 'FQDN'

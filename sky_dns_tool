@@ -32,10 +32,10 @@ iptc = {}           # ip address token cache
 stc = {}            # summary data cache
 
 rtc["localhost"] = {"line_num": [0]}
-iptc_list = ['discoveredInformation:']
-stc_list = ['summaryData:']
+iptc_list = []
+stc_list = []
 ntc_list = []
-etc_list = ['errors:']
+etc_list = []
 
 num_lines = 0
 num_errors = 0
@@ -109,7 +109,7 @@ for line in i_file:
                     num_fqdn += 1
                 occ = {"as": token, "line": num_lines, "normalized": nmz_token, "recordsAType": alist}
                 ntc_cache = {"type": "DN", "occurrences": occ}
-                ntc_list.append(ntc_cache)
+                iptc_list.append(ntc_cache)
             else:
                 occ = {"as": token, "line": num_lines}
                 etc_cache = {"type": "Error", "occurrences": occ}
@@ -118,12 +118,13 @@ for line in i_file:
 
 stc_cache = {"linesWithToken": num_lines, "totalFQDN": num_fqdn, "totalPQDN": num_pqdn, "totalIPv4": num_ipv4,
              "totalErrors": num_errors, "tokenSkippedAlreadySeen": dup_token,
-             "tokenSkippedAlreadySawNormalized": dup_tsasn, "errors": etc_list,
-             "discoveredInformation": iptc_list}
+             "tokenSkippedAlreadySawNormalized": dup_tsasn}
+stc_list.append(stc_cache)
 
-json.dump(stc_cache, j_file, indent=2)
+final_cache = {"summaryData": stc_list, "discoveredInformation": iptc_list,  "errors": etc_list}
+json.dump(final_cache, j_file, indent=2)
 json.dump(rtc, o_file)
-json.dump(stc_cache, jsp_file)
+json.dump(final_cache, jsp_file)
 
 print "Tool Execution successful, Quitting now"
 exit(0)
