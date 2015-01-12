@@ -16,6 +16,8 @@ Python version used:
 python --version
 Python 2.7.5
 
+Code was executed on MAC version 10.9.5
+
 External tools to be installed:
 dnspython found at "https://github.com/rthalley/dnspython"
 
